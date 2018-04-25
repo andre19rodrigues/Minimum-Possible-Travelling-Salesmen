@@ -59,5 +59,6 @@ for i in range(0, popsize):
 
 
 #population.sort(key=itemgetter(10))
-print(population)
 
+print(population)
+print(routes.getFitnessTotalPopulation(population, distances, citiestotal))

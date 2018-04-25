@@ -3,27 +3,31 @@ import random
 crossoverProb = 0.5
 mutationProb = 0.2
 
-def uniformCrossover(motherCromo, fatherCromo, popsize):
+def uniformCrossover(motherCromo, fatherCromo, citiestotal):
 
-    mask = []
-    for i in range(0, popsize):
-        if random.random(0, 1) < crossoverProb:
-            mask.append(1)
-        else:
-            mask.append(0)
+    a = random.randint(0, citiestotal-1)
+    b = random.randint(0, citiestotal-1)
 
-    child1 = []
-    child2 = []
+    child = []
+    for i in range(0, citiestotal):
+        child.append(999999)
 
-    for i in range(0, popsize):
-        if(mask[i] == 1):
-            child1.append(fatherCromo[i])
-            child2.append(motherCromo[i])
-        else:
-            child1.append(motherCromo[i])
-            child2.append(fatherCromo[i])
+    for i in range(0, citiestotal):
+        if (a < b and i > a and i < b):
+            child[i] = motherCromo[i]
 
-    return child1, child2
+        elif (a > b and not (i < a and i > b)):
+            child[i] = motherCromo[i]
+
+
+    for i in range(0, citiestotal):
+        if (fatherCromo[i] not in child):
+            for j in range(0, citiestotal):
+                if (child[j] == 999999):
+                    child[j] = fatherCromo[i]
+                    break
+
+    return child
 
 
 def randomMutation(cromo, popsize):
