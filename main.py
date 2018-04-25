@@ -2,20 +2,21 @@ import csv
 import random
 from operator import itemgetter
 
-import AlgGen
+import AlgGen as AG
 import routes
 
 distances = []
 citiestotal = 0
 citinames = []
 population = []
-popsize = 500
+popsize = 10
+nGenerations = 30
 
 def readdata():
 
     global citiestotal
 
-    with open('locations.csv', 'rb') as csvfile:
+    with open('locations.csv', 'r') as csvfile:
         loc = csv.reader(csvfile)
 
         a = 65
@@ -43,22 +44,20 @@ def readdata():
 
 
 readdata()
-print(distances)
+#print(distances)
 
 alphabeticRoute = []
 for i in range(0, citiestotal):
     alphabeticRoute.append(distances[i][1])
 
-for i in range(0, popsize):
-    aRoute = random.sample(alphabeticRoute, citiestotal)
-    a = routes.getFitness(aRoute, distances, citiestotal)
-    save = aRoute
-    save.append(a)
-    population.append(save)
-    del aRoute
+pop = AG.init_population(alphabeticRoute, citiestotal, distances, popsize)
+pop = AG.evolvePopulation(pop, distances, citiestotal, True)
+for i in range(1, nGenerations):
+    print(i)
+    pop = AG.evolvePopulation(pop, distances, citiestotal, False)
+    print(pop)
 
 
-#population.sort(key=itemgetter(10))
 
 print(population)
 print(routes.getFitnessTotalPopulation(population, distances, citiestotal))
