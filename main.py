@@ -51,13 +51,14 @@ for i in range(0, citiestotal):
     alphabeticRoute.append(distances[i][1])
 
 pop = AG.init_population(alphabeticRoute, citiestotal, distances, popsize)
+print(pop)
 pop = AG.evolvePopulation(pop, distances, citiestotal, True)
 for i in range(1, nGenerations):
+    print(pop)
     print(i)
     pop = AG.evolvePopulation(pop, distances, citiestotal, False)
-    print(pop)
 
 
 
-print(population)
-print(routes.getFitnessTotalPopulation(population, distances, citiestotal))
+print(pop[0])
+#print(routes.getFitnessTotalPopulation(population, distances, citiestotal))

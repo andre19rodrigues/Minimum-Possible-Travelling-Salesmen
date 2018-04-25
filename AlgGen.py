@@ -23,10 +23,10 @@ def uniformCrossover(motherCromo, fatherCromo, citiestotal):
 
     for i in range(0, citiestotal):
             for j in range(0, citiestotal):
-        if (fatherCromo[i] not in child):
-                if (child[j] == 999999):
-                    child[j] = fatherCromo[i]
-                    break
+                if (fatherCromo[i] not in child):
+                    if (child[j] == 999999):
+                        child[j] = fatherCromo[i]
+                        break
 
     return child
 
@@ -102,11 +102,11 @@ def evolvePopulation(population, distances, citiestotal, first):
         parent1 = proporcionalSelection(population, citiestotal)
         parent2 = proporcionalSelection(population, citiestotal)
         
-        child1, child2 = uniformCrossover(parent1, parent2)
-        new_pop.append(child1)
+        child = uniformCrossover(parent1, parent2, citiestotal)
+        new_pop.append(child)
 
 
-    for i in range(0, len(new_pop)):
+    for i in range(1, len(new_pop)):
         cromoMutation = randomMutation(new_pop[i], citiestotal)
         new_pop[i] = cromoMutation
 
