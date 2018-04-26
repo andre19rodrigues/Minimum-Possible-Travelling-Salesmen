@@ -9,8 +9,9 @@ distances = []
 citiestotal = 0
 citinames = []
 population = []
-popsize = 10
-nGenerations = 30
+popsize = 100
+nGenerations = 50
+start_end_point = 'AA'
 
 def readdata():
 
@@ -47,10 +48,12 @@ readdata()
 #print(distances)
 
 alphabeticRoute = []
-for i in range(0, citiestotal):
+alphabeticRoute.append(start_end_point)# on the first position we append the start_end_point
+for i in range(1, citiestotal - 1):
     alphabeticRoute.append(distances[i][1])
+alphabeticRoute.append(start_end_point)# on the last position we append the start_end_point
 
-pop = AG.init_population(alphabeticRoute, citiestotal, distances, popsize)
+pop = AG.init_population(alphabeticRoute, citiestotal, distances, popsize, start_end_point)
 print(pop)
 pop = AG.evolvePopulation(pop, distances, citiestotal, True)
 for i in range(1, nGenerations):
