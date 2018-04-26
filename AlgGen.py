@@ -10,10 +10,13 @@ def uniformCrossover(motherCromo, fatherCromo, citiestotal):
     b = random.randint(0, citiestotal-1)
 
     child = []
-    for i in range(0, citiestotal):
+    child.insert(0, motherCromo[0])
+    for i in range(1, citiestotal -1):
         child.append(999999)
 
-    for i in range(0, citiestotal):
+    child.append(motherCromo[citiestotal - 1])
+
+    for i in range(1, citiestotal - 1):
         if (a < b and i > a and i < b):
             child[i] = motherCromo[i]
 
@@ -21,8 +24,8 @@ def uniformCrossover(motherCromo, fatherCromo, citiestotal):
             child[i] = motherCromo[i]
 
 
-    for i in range(0, citiestotal):
-            for j in range(0, citiestotal):
+    for i in range(1, citiestotal - 1):
+            for j in range(1, citiestotal - 1):
                 if (fatherCromo[i] not in child):
                     if (child[j] == 999999):
                         child[j] = fatherCromo[i]
@@ -31,11 +34,11 @@ def uniformCrossover(motherCromo, fatherCromo, citiestotal):
     return child
 
 def randomMutation(cromo, citiesTotal):
-    for i in range(0, citiesTotal):
+    for i in range(1, citiesTotal-1):
         if random.random() < mutationProb:
             val = i
             while val == i:
-                val = random.randint(0, citiesTotal - 1)
+                val = random.randint(1, citiesTotal - 2)
                 # val = random.randrange(0, cromo_size-1, i)
             cromo[i], cromo[val] = cromo[val], cromo[i]
 
@@ -46,7 +49,7 @@ def proporcionalSelection(population, citiestotal):
     sum_aptd = 0 # sum of all fitnesses
     prob_array = [] # array to store the probabilities
     for i in population:
-        sum_aptd = sum_aptd + i[10]
+        sum_aptd = sum_aptd + i[citiestotal]
 
     for i in population:
         prob = i[citiestotal] / sum_aptd
@@ -69,10 +72,12 @@ def elitism(population, citiesTotal):
     population.sort(key=itemgetter(citiesTotal))
     return population[0]
 
-def init_population(alphabeticRoute, citiestotal, distances, popsize):
+def init_population(alphabeticRoute, citiestotal, distances, popsize, start_end_point):
     population = []
     for i in range(0, popsize):
-        aRoute = random.sample(alphabeticRoute, citiestotal)
+        aRoute = random.sample(alphabeticRoute[1:citiestotal - 1], citiestotal - 2)
+        aRoute.insert(0, start_end_point)
+        aRoute.append(start_end_point)
         a = routes.getFitness(aRoute, distances, citiestotal)
         save = aRoute
         save.append(a)
@@ -86,14 +91,11 @@ def evolvePopulation(population, distances, citiestotal, first):
     new_pop = []
     popsize = len(population)
     if not first:
-        for i in range(0, popsize):
+        for i in range(1, popsize):
             fit = routes.getFitness(population[i], distances, citiestotal)
-            if len(population[i])  is not 11:
-                population[i].append(fit)
-            else:
-                population[i][10] = fit
+            population[i].append(fit)
 
-    elit = 1 # only the best of each gen goes directly to next gen
+    # only the best of each gen goes directly to next gen
     elit_cromo = elitism(population, citiestotal)
     new_pop.append(elit_cromo)
 
