@@ -11,12 +11,12 @@ def uniformCrossover(motherCromo, fatherCromo, citiestotal):
 
     child = []
     child.insert(0, motherCromo[0])
-    for i in range(1, citiestotal -1):
+    for i in range(1, citiestotal):
         child.append(999999)
 
-    child.append(motherCromo[citiestotal - 1])
-
-    for i in range(1, citiestotal - 1):
+    child.append(motherCromo[citiestotal])
+    
+    for i in range(1, citiestotal):
         if (a < b and i > a and i < b):
             child[i] = motherCromo[i]
 
@@ -24,8 +24,8 @@ def uniformCrossover(motherCromo, fatherCromo, citiestotal):
             child[i] = motherCromo[i]
 
 
-    for i in range(1, citiestotal - 1):
-            for j in range(1, citiestotal - 1):
+    for i in range(1, citiestotal):
+            for j in range(1, citiestotal):
                 if (fatherCromo[i] not in child):
                     if (child[j] == 999999):
                         child[j] = fatherCromo[i]
@@ -45,37 +45,40 @@ def randomMutation(cromo, citiesTotal):
     return cromo
 
 
-def proporcionalSelection(population, citiestotal):
+def proporcionalSelection(population, citiestotal, popsize):
     sum_aptd = 0 # sum of all fitnesses
     prob_array = [] # array to store the probabilities
     for i in population:
-        sum_aptd = sum_aptd + i[citiestotal]
+        sum_aptd = sum_aptd + i[citiestotal + 1]
 
     for i in population:
-        prob = i[citiestotal] / sum_aptd
+        prob = i[citiestotal + 1] / sum_aptd
         prob_array.append(prob)
 
     # roullete pick
     rand = random.random()
     i = 0
-
     s = prob_array[0]
     while s < rand:
+        if (i + 1) == popsize:
+            break
         i = i + 1
         s = s + prob_array[i]
-
+    
+        
     return population[i]
 
  # receives a population and the number of individuals to select
  # returns k selected
 def elitism(population, citiesTotal):
-    population.sort(key=itemgetter(citiesTotal))
+    population.sort(key=itemgetter(citiesTotal + 1))
     return population[0]
 
 def init_population(alphabeticRoute, citiestotal, distances, popsize, start_end_point):
     population = []
     for i in range(0, popsize):
-        aRoute = random.sample(alphabeticRoute[1:citiestotal - 1], citiestotal - 2)
+        aRoute = random.sample(alphabeticRoute[1:citiestotal], citiestotal - 1)
+        #print(aRoute)
         aRoute.insert(0, start_end_point)
         aRoute.append(start_end_point)
         a = routes.getFitness(aRoute, distances, citiestotal)
@@ -91,7 +94,7 @@ def evolvePopulation(population, distances, citiestotal, first):
     new_pop = []
     popsize = len(population)
     if not first:
-        for i in range(1, popsize):
+        for i in range(1, popsize): # starts at 1 because the first one alredy comes with fitness
             fit = routes.getFitness(population[i], distances, citiestotal)
             population[i].append(fit)
 
@@ -101,8 +104,8 @@ def evolvePopulation(population, distances, citiestotal, first):
 
 
     for i in range(1, popsize):
-        parent1 = proporcionalSelection(population, citiestotal)
-        parent2 = proporcionalSelection(population, citiestotal)
+        parent1 = proporcionalSelection(population, citiestotal, popsize)
+        parent2 = proporcionalSelection(population, citiestotal, popsize)
         
         child = uniformCrossover(parent1, parent2, citiestotal)
         new_pop.append(child)
@@ -115,14 +118,3 @@ def evolvePopulation(population, distances, citiestotal, first):
 
 
     return new_pop
-        
-
-
-
-
-
-
-
-
-
-
