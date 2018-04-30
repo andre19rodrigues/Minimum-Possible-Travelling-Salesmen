@@ -4,4 +4,4 @@
 venv/
 
 locations.csv
-
+*.pyc
