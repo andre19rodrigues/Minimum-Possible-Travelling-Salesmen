@@ -10,10 +10,10 @@ citiestotal = 0
 citinames = []
 population = []
 salesmenRoute = []
-popsize = 500
+popsize = 2000
 nGenerations = 50
 start_end_point = 'AA'
-
+distancesDict = {}
 Msalesman = 5
 DMsalesman = 50
 
@@ -34,6 +34,7 @@ def readdata():
             for i in range(0, citiestotal):
                 city = [chr(a)+chr(b), chr(c)+chr(d), row[i]]
                 distances.append(city)
+                distancesDict[(chr(a)+chr(b), chr(c)+chr(d))] = row[i]
                 if d is not 90:
                     d += 1
                 else:
@@ -51,17 +52,12 @@ def readdata():
 
 readdata()
 
-
-
-
-
-
 for i in range(0, 3):
     alphabeticRoute = routes.genAlphabeticRoute(citiestotal, distances)
     aRoute = random.sample(alphabeticRoute, len(alphabeticRoute))
     #print('aroute   '+str(aRoute))
     salesmenRoute = []
-    salesmenRoute = sm.addCitiestoSalesmen(citiestotal, salesmenRoute, Msalesman, DMsalesman, aRoute, distances)
+    salesmenRoute = sm.addCitiestoSalesmen(citiestotal, salesmenRoute, Msalesman, DMsalesman, aRoute, distancesDict)
 
     for i in range(Msalesman, 0, -1):
         try:
@@ -73,10 +69,10 @@ for i in range(0, 3):
     #print(alphabeticRoute)
 
     for i in range(0, len(salesmenRoute)):
-        print(str(salesmenRoute[i]) +' '+ str(routes.getFitness(salesmenRoute[i], distances)))
+        print(str(salesmenRoute[i]) +' '+ str(routes.getFitness(salesmenRoute[i], distancesDict)))
 
     print()
 
 
 
-#routes.getOptimalTS1Salesman(start_end_point, citiestotal, distances, popsize, nGenerations)
+routes.getOptimalTS1Salesman(start_end_point, citiestotal, distances, popsize, nGenerations, distancesDict)

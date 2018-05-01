@@ -45,16 +45,7 @@ def randomMutation(cromo, citiesTotal):
     return cromo
 
 
-def proporcionalSelection(population, citiestotal, popsize):
-    sum_aptd = 0 # sum of all fitnesses
-    prob_array = [] # array to store the probabilities
-    for i in population:
-        sum_aptd = sum_aptd + i[citiestotal + 1]
-
-    for i in population:
-        prob = i[citiestotal + 1] / sum_aptd
-        prob_array.append(prob)
-
+def proporcionalSelection(population, prob_array, popsize):
     # roullete pick
     rand = random.random()
     i = 0
@@ -111,19 +102,25 @@ def evolvePopulation(population, distances, citiestotal, first):
     elit_cromo = elitism(population, citiestotal)
     new_pop.append(elit_cromo)
 
+    sum_aptd = 0  # sum of all fitnesses
+    prob_array = []  # array to store the probabilities
+    for i in population:
+        sum_aptd = sum_aptd + i[citiestotal + 1]
+
+    for i in population:
+        prob = i[citiestotal + 1] / sum_aptd
+        prob_array.append(prob)
+
 
     for i in range(1, popsize):
-        parent1 = proporcionalSelection(population, citiestotal, popsize)
-        parent2 = proporcionalSelection(population, citiestotal, popsize)
-        
-        child = uniformCrossover(parent1, parent2, citiestotal)
-        new_pop.append(child)
+            parent1 = proporcionalSelection(population, prob_array, popsize)
+            parent2 = proporcionalSelection(population, prob_array, popsize)
 
+            child = uniformCrossover(parent1, parent2, citiestotal)
+            new_pop.append(child)
 
     for i in range(1, len(new_pop)):
         cromoMutation = randomMutation(new_pop[i], citiestotal)
         new_pop[i] = cromoMutation
-
-
 
     return new_pop
