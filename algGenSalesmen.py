@@ -1,6 +1,5 @@
 import random
-from operator import itemgetter
-import routes
+
 crossoverProb = 0.5
 mutationProb = 0.2
 
@@ -34,3 +33,18 @@ def Crossover(motherCromo, fatherCromo):
                         break
 
     return child
+
+
+
+def randomMutation(cromo):
+
+    lcromo = len(cromo)
+
+    for i in range(1, lcromo-2):
+        if random.random() < mutationProb:
+            val = i
+            while val == i:
+                val = random.randint(1, lcromo - 2)
+            cromo[i], cromo[val] = cromo[val], cromo[i]
+
+    return cromo
