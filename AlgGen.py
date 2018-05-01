@@ -4,7 +4,7 @@ import routes
 crossoverProb = 0.5
 mutationProb = 0.2
 
-def uniformCrossover(motherCromo, fatherCromo, citiestotal):
+def Crossover(motherCromo, fatherCromo, citiestotal):
 
     a = random.randint(0, citiestotal-1)
     b = random.randint(0, citiestotal-1)
@@ -116,7 +116,7 @@ def evolvePopulation(population, distances, citiestotal, first):
             parent1 = proporcionalSelection(population, prob_array, popsize)
             parent2 = proporcionalSelection(population, prob_array, popsize)
 
-            child = uniformCrossover(parent1, parent2, citiestotal)
+            child = Crossover(parent1, parent2, citiestotal)
             new_pop.append(child)
 
     for i in range(1, len(new_pop)):

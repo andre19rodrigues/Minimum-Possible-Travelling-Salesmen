@@ -1,4 +1,5 @@
 import csv
+import datetime
 import random
 
 import AlgGen as AG
@@ -10,13 +11,14 @@ citiestotal = 0
 citinames = []
 population = []
 salesmenRoute = []
-popsize = 2000
-nGenerations = 50
+popsize = 100
+nGenerations = 5000
 start_end_point = 'AA'
 distancesDict = {}
 Msalesman = 5
 DMsalesman = 50
 
+before = datetime.datetime.now()
 
 def readdata():
 
@@ -52,7 +54,7 @@ def readdata():
 
 readdata()
 
-for i in range(0, 3):
+for i in range(0, nGenerations):
     alphabeticRoute = routes.genAlphabeticRoute(citiestotal, distances)
     aRoute = random.sample(alphabeticRoute, len(alphabeticRoute))
     #print('aroute   '+str(aRoute))
@@ -65,8 +67,6 @@ for i in range(0, 3):
                 del(salesmenRoute[i])
         except:
             xyz = 0
-    #print(salesmenRoute)
-    #print(alphabeticRoute)
 
     for i in range(0, len(salesmenRoute)):
         print(str(salesmenRoute[i]) +' '+ str(routes.getFitness(salesmenRoute[i], distancesDict)))
@@ -75,4 +75,6 @@ for i in range(0, 3):
 
 
 
-routes.getOptimalTS1Salesman(start_end_point, citiestotal, distances, popsize, nGenerations, distancesDict)
+#routes.getOptimalTS1Salesman(start_end_point, citiestotal, distances, popsize, nGenerations, distancesDict)
+
+print(datetime.datetime.now() - before)
