@@ -1,6 +1,7 @@
 import random
 from operator import itemgetter
 import routes
+import numpy as np
 crossoverProb = 0.5
 mutationProb = 0.2
 
@@ -15,7 +16,7 @@ def uniformCrossover(motherCromo, fatherCromo, citiestotal):
         child.append(999999)
 
     child.append(motherCromo[citiestotal])
-    
+
     for i in range(1, citiestotal):
         if (a < b and i > a and i < b):
             child[i] = motherCromo[i]
@@ -25,11 +26,11 @@ def uniformCrossover(motherCromo, fatherCromo, citiestotal):
 
 
     for i in range(1, citiestotal):
-            for j in range(1, citiestotal):
-                if (fatherCromo[i] not in child):
-                    if (child[j] == 999999):
-                        child[j] = fatherCromo[i]
-                        break
+        for j in range(1, citiestotal):
+            if (fatherCromo[i] not in child):
+                if (child[j] == 999999):
+                    child[j] = fatherCromo[i]
+                    break
 
     return child
 
@@ -45,16 +46,7 @@ def randomMutation(cromo, citiesTotal):
     return cromo
 
 
-def proporcionalSelection(population, citiestotal, popsize):
-    sum_aptd = 0 # sum of all fitnesses
-    prob_array = [] # array to store the probabilities
-    for i in population:
-        sum_aptd = sum_aptd + i[citiestotal + 1]
-
-    for i in population:
-        prob = i[citiestotal + 1] / sum_aptd
-        prob_array.append(prob)
-
+def proporcionalSelection(population, popsize, prob_array):
     # roullete pick
     rand = random.random()
     i = 0
@@ -64,8 +56,7 @@ def proporcionalSelection(population, citiestotal, popsize):
             break
         i = i + 1
         s = s + prob_array[i]
-    
-        
+
     return population[i]
 
  # receives a population and the number of individuals to select
@@ -74,14 +65,13 @@ def elitism(population, citiesTotal):
     population.sort(key=itemgetter(citiesTotal + 1))
     return population[0]
 
-def init_population(alphabeticRoute, citiestotal, distances, popsize, start_end_point):
+def init_population(alphabeticRoute, citiestotal, distancesDict, popsize, start_end_point):
     population = []
     for i in range(0, popsize):
         aRoute = random.sample(alphabeticRoute[1:citiestotal], citiestotal - 1)
-        #print(aRoute)
         aRoute.insert(0, start_end_point)
         aRoute.append(start_end_point)
-        a = routes.getFitness(aRoute, distances, citiestotal)
+        a = routes.getFitness(aRoute, distancesDict, citiestotal)
         save = aRoute
         save.append(a)
         population.append(save)
@@ -89,23 +79,32 @@ def init_population(alphabeticRoute, citiestotal, distances, popsize, start_end_
     
     return population
 
-def evolvePopulation(population, distances, citiestotal, first):
+def evolvePopulation(population, distancesDict, citiestotal, first, popsize):
     #calculate fitness for every indivual in population
     new_pop = []
-    popsize = len(population)
     if not first:
         for i in range(1, popsize): # starts at 1 because the first one alredy comes with fitness
-            fit = routes.getFitness(population[i], distances, citiestotal)
+            fit = routes.getFitness(population[i], distancesDict, citiestotal)
             population[i].append(fit)
 
     # only the best of each gen goes directly to next gen
     elit_cromo = elitism(population, citiestotal)
     new_pop.append(elit_cromo)
 
+    #calculate probablilty of being selected for each indivual
+    sum_aptd = 0.0  # sum of all fitnesses
+    prob_array = []  # array to store the probabilities
+    for i in population:
+        sum_aptd = sum_aptd + i[citiestotal + 1]
 
+    for i in population:
+        prob = i[citiestotal + 1] / sum_aptd
+        prob_array.append(prob)
+
+    #pick 2 parents using roulette method
     for i in range(1, popsize):
-        parent1 = proporcionalSelection(population, citiestotal, popsize)
-        parent2 = proporcionalSelection(population, citiestotal, popsize)
+        parent1 = proporcionalSelection(population, popsize, prob_array)
+        parent2 = proporcionalSelection(population, popsize, prob_array)
         
         child = uniformCrossover(parent1, parent2, citiestotal)
         new_pop.append(child)

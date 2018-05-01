@@ -6,11 +6,12 @@ import AlgGen as AG
 import routes
 
 distances = []
-citiestotal = 0
+citiestotal = 0 # nª de alelos em cada cromossoma
 citinames = []
 population = []
-popsize = 50
-nGenerations = 50
+distancesDict = {}
+popsize = 100
+nGenerations = 6
 start_end_point = 'AA'
 
 def readdata():
@@ -29,6 +30,7 @@ def readdata():
             for i in range(0, citiestotal):
                 city = [chr(a)+chr(b), chr(c)+chr(d), row[i]]
                 distances.append(city)
+                distancesDict[(chr(a)+chr(b), chr(c)+chr(d))] = row[i]
                 if d is not 90:
                     d += 1
                 else:
@@ -53,14 +55,13 @@ for i in range(1, citiestotal):
     alphabeticRoute.append(distances[i][1])
 alphabeticRoute.append(start_end_point)# on the last position we append the start_end_point
 
-pop = AG.init_population(alphabeticRoute, citiestotal, distances, popsize, start_end_point)
+pop = AG.init_population(alphabeticRoute, citiestotal, distancesDict, popsize, start_end_point)
 print(pop)
-pop = AG.evolvePopulation(pop, distances, citiestotal, True)
-print(pop)
+pop = AG.evolvePopulation(pop, distancesDict, citiestotal, True, popsize)
 for i in range(1, nGenerations):
     print(pop)
     print(i)
-    pop = AG.evolvePopulation(pop, distances, citiestotal, False)
+    pop = AG.evolvePopulation(pop, distancesDict, citiestotal, False, popsize)
 
 
 
