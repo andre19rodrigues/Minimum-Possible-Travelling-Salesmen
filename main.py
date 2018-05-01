@@ -1,18 +1,22 @@
 import csv
 import random
-from operator import itemgetter
 
 import AlgGen as AG
+import Salesmen as sm
 import routes
 
 distances = []
-citiestotal = 0 # nª de alelos em cada cromossoma
+citiestotal = 0
 citinames = []
 population = []
-distancesDict = {}
-popsize = 100
-nGenerations = 6
+salesmenRoute = []
+popsize = 500
+nGenerations = 50
 start_end_point = 'AA'
+
+Msalesman = 5
+DMsalesman = 50
+
 
 def readdata():
 
@@ -30,7 +34,6 @@ def readdata():
             for i in range(0, citiestotal):
                 city = [chr(a)+chr(b), chr(c)+chr(d), row[i]]
                 distances.append(city)
-                distancesDict[(chr(a)+chr(b), chr(c)+chr(d))] = row[i]
                 if d is not 90:
                     d += 1
                 else:
@@ -47,23 +50,33 @@ def readdata():
 
 
 readdata()
-#print(distances)
-
-alphabeticRoute = []
-alphabeticRoute.append(start_end_point)# on the first position we append the start_end_point
-for i in range(1, citiestotal):
-    alphabeticRoute.append(distances[i][1])
-alphabeticRoute.append(start_end_point)# on the last position we append the start_end_point
-
-pop = AG.init_population(alphabeticRoute, citiestotal, distancesDict, popsize, start_end_point)
-print(pop)
-pop = AG.evolvePopulation(pop, distancesDict, citiestotal, True, popsize)
-for i in range(1, nGenerations):
-    print(pop)
-    print(i)
-    pop = AG.evolvePopulation(pop, distancesDict, citiestotal, False, popsize)
 
 
 
-#print(pop[0])
-#print(routes.getFitnessTotalPopulation(population, distances, citiestotal))
+
+
+
+for i in range(0, 3):
+    alphabeticRoute = routes.genAlphabeticRoute(citiestotal, distances)
+    aRoute = random.sample(alphabeticRoute, len(alphabeticRoute))
+    #print('aroute   '+str(aRoute))
+    salesmenRoute = []
+    salesmenRoute = sm.addCitiestoSalesmen(citiestotal, salesmenRoute, Msalesman, DMsalesman, aRoute, distances)
+
+    for i in range(Msalesman, 0, -1):
+        try:
+            if (len(salesmenRoute[i])==1):
+                del(salesmenRoute[i])
+        except:
+            xyz = 0
+    #print(salesmenRoute)
+    #print(alphabeticRoute)
+
+    for i in range(0, len(salesmenRoute)):
+        print(str(salesmenRoute[i]) +' '+ str(routes.getFitness(salesmenRoute[i], distances)))
+
+    print()
+
+
+
+#routes.getOptimalTS1Salesman(start_end_point, citiestotal, distances, popsize, nGenerations)
