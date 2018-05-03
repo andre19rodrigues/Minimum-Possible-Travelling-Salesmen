@@ -5,17 +5,17 @@ import random
 import AlgGen as AG
 import Salesmen as sm
 import routes
-
+import algGenSalesmen as AGSalesman
 distances = []
 citiestotal = 0
 citinames = []
 population = []
 salesmenRoute = []
 popsize = 100
-nGenerations = 5000
+nGenerations = 100
 start_end_point = 'AA'
 distancesDict = {}
-Msalesman = 5
+Msalesman = 10
 DMsalesman = 50
 
 before = datetime.datetime.now()
@@ -54,7 +54,7 @@ def readdata():
 
 readdata()
 
-for i in range(0, nGenerations):
+for i in range(0, popsize):
     alphabeticRoute = routes.genAlphabeticRoute(citiestotal, distances)
     aRoute = random.sample(alphabeticRoute, len(alphabeticRoute))
     #print('aroute   '+str(aRoute))
@@ -69,12 +69,21 @@ for i in range(0, nGenerations):
             xyz = 0
 
     for i in range(0, len(salesmenRoute)):
-        print(str(salesmenRoute[i]) +' '+ str(routes.getFitness(salesmenRoute[i], distancesDict)))
+        salesmenRoute[i].append(routes.getFitness(salesmenRoute[i], distancesDict))
+        #print(str(salesmenRoute[i]) +' '+ str(routes.getFitness(salesmenRoute[i], distancesDict)))
 
-    print()
+    population.append(salesmenRoute)
+
+print(0)
+pop = AGSalesman.evolvePopulation_multipleSalesman(population, distancesDict, DMsalesman)
+for i in range(1, nGenerations):
+    print(pop)
+    print(i)
+    pop = AGSalesman.evolvePopulation_multipleSalesman(pop, distancesDict, DMsalesman)
+
+print(pop[0])
+
 
 
 
 #routes.getOptimalTS1Salesman(start_end_point, citiestotal, distances, popsize, nGenerations, distancesDict)
-
-print(datetime.datetime.now() - before)
