@@ -34,7 +34,7 @@ def Crossover(cromo, sizeCromo, distanceDict, maxKM):
     if len(cromoRemove) == 3: # when the size of the cromoRemove is 3 [AA, AA, 123],
         minMax2 = 99999
         if routes.getFitness(cromoADD[:len(cromoADD)-1], distanceDict) > maxKM:
-            for i in range(0, 100):
+            for i in range(0, int(mutationProb*100*len(cromoADD))):
                 r = randomMutation(cromoADD)
                 fit = routes.getFitness(r[:len(r)-1], distanceDict)
                 if ((fit <= maxKM) and (fit < minMax2)):
@@ -59,7 +59,7 @@ def Crossover(cromo, sizeCromo, distanceDict, maxKM):
         #CromoRemove size > 3
         minMax = 99999
         if routes.getFitness(cromoRemove[:len(cromoRemove)-1], distanceDict) > maxKM:
-            for i in range(0, 100):
+            for i in range(0, int(mutationProb*100*len(cromoRemove))):
                 r = randomMutation(cromoRemove)
                 fit = routes.getFitness(r[:len(r)-1], distanceDict)
                 if ((fit <= maxKM) and (fit < minMax)):
@@ -72,7 +72,7 @@ def Crossover(cromo, sizeCromo, distanceDict, maxKM):
             else:
                 minMax2 = 99999
                 if routes.getFitness(cromoADD[:len(cromoADD)-1], distanceDict) > maxKM:
-                    for i in range(0, 100):
+                    for i in range(0, int(mutationProb*100*len(cromoRemove))):
                         r = randomMutation(cromoADD)
                         fit = routes.getFitness(r[:len(r)-1], distanceDict)
                         if ((fit <= maxKM) and (fit < minMax2)):
@@ -98,7 +98,7 @@ def Crossover(cromo, sizeCromo, distanceDict, maxKM):
         else:
             minMax = 99999
             if routes.getFitness(cromoADD[:len(cromoADD)-1], distanceDict) > maxKM:
-                for i in range(0, 100):
+                for i in range(0, int(mutationProb*100*len(cromoRemove))):
                     r = randomMutation(cromoADD)
                     fit = routes.getFitness(r[:len(r) - 1], distanceDict)
                     if ((fit <= maxKM) and (fit < minMax)):
