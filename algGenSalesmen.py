@@ -145,7 +145,7 @@ def evolvePopulation_multipleSalesman(population, distancesDict, maxKM):
     new_pop.append(elit_cromo)
 
 
-    for i in range(1, popsize):
+    for i in range(0, popsize):
 
         if random.random() <= crossoverProb:
             sizeCromo = len(population[i])
