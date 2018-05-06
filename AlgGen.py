@@ -93,10 +93,10 @@ def evolvePopulation(population, distances, citiestotal, first):
     #calculate fitness for every indivual in population
     new_pop = []
     popsize = len(population)
-    if not first:
-        for i in range(1, popsize): # starts at 1 because the first one alredy comes with fitness
-            fit = routes.getFitness(population[i], distances)
-            population[i].append(fit)
+    # if not first:
+    #     for i in range(1, popsize): # starts at 1 because the first one alredy comes with fitness
+    #         fit = routes.getFitness(population[i], distances)
+    #         population[i].append(fit)
 
     # only the best of each gen goes directly to next gen
     elit_cromo = elitism(population, citiestotal)
@@ -116,8 +116,16 @@ def evolvePopulation(population, distances, citiestotal, first):
             parent1 = proporcionalSelection(population, prob_array, popsize)
             parent2 = proporcionalSelection(population, prob_array, popsize)
 
-            child = Crossover(parent1, parent2, citiestotal)
-            new_pop.append(child)
+            rand = random.random()
+            if rand < crossoverProb:
+                child = Crossover(parent1, parent2, citiestotal)
+                new_pop.append(child)
+            else:
+                rand2 = random.randint(0,1)
+                if rand2 == 0:
+                    new_pop.append(parent1)
+                else:
+                    new_pop.append(parent2)
 
     for i in range(1, len(new_pop)):
         cromoMutation = randomMutation(new_pop[i], citiestotal)

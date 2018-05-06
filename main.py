@@ -16,7 +16,7 @@ nGenerations = 100
 start_end_point = 'AA'
 distancesDict = {}
 Msalesman = 10
-DMsalesman = 50
+DMsalesman = 30
 
 before = datetime.datetime.now()
 
@@ -74,7 +74,9 @@ for i in range(0, popsize):
 
     population.append(salesmenRoute)
 
-print(0)
+print(population)
+
+
 pop = AGSalesman.evolvePopulation_multipleSalesman(population, distancesDict, DMsalesman)
 for i in range(1, nGenerations):
     print(pop)
@@ -83,7 +85,6 @@ for i in range(1, nGenerations):
 
 print(pop[0])
 
-
-
-
 #routes.getOptimalTS1Salesman(start_end_point, citiestotal, distances, popsize, nGenerations, distancesDict)
+
+print(datetime.datetime.now() - before)

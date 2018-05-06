@@ -1,13 +1,18 @@
 import random
 import routes
 mutationProb = 0.2
+crossoverProb = 0.4
 
 def Crossover(cromo, sizeCromo, distanceDict, maxKM):
     # select two random cromo from cromo array
     rand = random.randint(0, (sizeCromo - 2))
     val = rand
-    while val == rand:
-        val = random.randint(0, sizeCromo - 2)
+
+    if sizeCromo == 2:
+        val = 1
+    else:
+        while val == rand:
+            val = random.randint(0, sizeCromo - 2)
 
     # position selected to add to new cromo
     cromoPos = random.randrange(1, (len(cromo[rand]) - 2))
@@ -32,10 +37,10 @@ def Crossover(cromo, sizeCromo, distanceDict, maxKM):
             for i in range(0, 100):
                 r = randomMutation(cromoADD)
                 fit = routes.getFitness(r[:len(r)-1], distanceDict)
-                if fit < maxKM and fit < minMax2:
+                if ((fit <= maxKM) and (fit < minMax2)):
                     minMax2 = fit
                     r[len(r) - 1] = fit
-                    min2 = r
+                    min2 = r[:]
 
             if minMax2 > maxKM:
                 return cromo
@@ -51,15 +56,16 @@ def Crossover(cromo, sizeCromo, distanceDict, maxKM):
             return cromo
 
     else:
+        #CromoRemove size > 3
         minMax = 99999
         if routes.getFitness(cromoRemove[:len(cromoRemove)-1], distanceDict) > maxKM:
             for i in range(0, 100):
                 r = randomMutation(cromoRemove)
                 fit = routes.getFitness(r[:len(r)-1], distanceDict)
-                if fit < maxKM and fit < minMax:
+                if ((fit <= maxKM) and (fit < minMax)):
                     minMax = fit
                     r[len(r)-1] = fit
-                    min = r
+                    min = r[:]
             if minMax > maxKM:
                 return cromo
 
@@ -69,10 +75,10 @@ def Crossover(cromo, sizeCromo, distanceDict, maxKM):
                     for i in range(0, 100):
                         r = randomMutation(cromoADD)
                         fit = routes.getFitness(r[:len(r)-1], distanceDict)
-                        if fit < maxKM and fit < minMax:
+                        if ((fit <= maxKM) and (fit < minMax2)):
                             minMax2 = fit
                             r[len(r)-1] = fit
-                            min2 = r
+                            min2 = r[:]
 
                     if minMax2 > maxKM:
                         return cromo
@@ -81,10 +87,10 @@ def Crossover(cromo, sizeCromo, distanceDict, maxKM):
                         cromo[val] = min2
                         return cromo
                 else:
-                    fit = routes.getFitness(cromoRemove[:len(cromoRemove) - 1], distanceDict)
-                    cromoRemove[len(cromoRemove) - 1] = fit
-                    cromo[rand] = cromoRemove
-                    fit = routes.getFitness(cromoADD[:len(min2) - 1], distanceDict)
+                    fit = routes.getFitness(min[:len(min) - 1], distanceDict)
+                    min[len(min) - 1] = fit
+                    cromo[rand] = min
+                    fit = routes.getFitness(cromoADD[:len(cromoADD) - 1], distanceDict)
                     cromoADD[len(cromoADD) - 1] = fit
                     cromo[val] = cromoADD
                     return cromo
@@ -95,10 +101,10 @@ def Crossover(cromo, sizeCromo, distanceDict, maxKM):
                 for i in range(0, 100):
                     r = randomMutation(cromoADD)
                     fit = routes.getFitness(r[:len(r) - 1], distanceDict)
-                    if fit < maxKM and fit < minMax:
+                    if ((fit <= maxKM) and (fit < minMax)):
                         minMax = fit
                         r[len(r) - 1] = fit
-                        min2 = r
+                        min2 = r[:]
                 if minMax > maxKM:
                     return cromo
                 else:
@@ -111,7 +117,7 @@ def Crossover(cromo, sizeCromo, distanceDict, maxKM):
                 fit = routes.getFitness(cromoRemove[:len(cromoRemove) - 1], distanceDict)
                 cromoRemove[len(cromoRemove) - 1] = fit
                 cromo[rand] = cromoRemove
-                fit = routes.getFitness(cromoADD[:len(min2) - 1], distanceDict)
+                fit = routes.getFitness(cromoADD[:len(cromoADD) - 1], distanceDict)
                 cromoADD[len(cromoADD) - 1] = fit
                 cromo[val] = cromoADD
                 return cromo
@@ -133,12 +139,6 @@ def evolvePopulation_multipleSalesman(population, distancesDict, maxKM):
     #calculate fitness for every indivual in population
     new_pop = []
     popsize = len(population)
-    # if not first:
-    #     for i in range(1, popsize): # starts at 1 because the first one alredy comes with fitness
-    #         sizeSalesman = len(population[i])
-    #         for j in range(0, sizeSalesman):
-    #             fit = routes.getFitness(population[i][j], distancesDict)
-    #             population[i][j].append(fit)
 
     #only the best of each gen goes directly to next gen
     elit_cromo = (elitism_multipleSalesman(population, popsize))
@@ -146,7 +146,7 @@ def evolvePopulation_multipleSalesman(population, distancesDict, maxKM):
 
 
     for i in range(1, popsize):
-        crossoverProb = 0.3
+
         if random.random() <= crossoverProb:
             sizeCromo = len(population[i])
             if sizeCromo is not 1:
@@ -157,10 +157,6 @@ def evolvePopulation_multipleSalesman(population, distancesDict, maxKM):
                 new_pop.append(population[i])
         else:
             new_pop.append(population[i])
-
-    for i in range(1, len(new_pop)):
-        cromoMutation = randomMutation(new_pop[i])
-        new_pop[i] = cromoMutation
 
     return new_pop
 
