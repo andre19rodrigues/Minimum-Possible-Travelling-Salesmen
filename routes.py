@@ -6,20 +6,15 @@ def getFitness(cromo, distancesDict):
     sum = 0
     cromolen = len(cromo)
 
-    for j in range(0, cromolen - 1):
+    for j in range(0, cromolen - 2):
         s = (cromo[j], cromo[j + 1])
-        val = distancesDict[s]
+        try:
+            val = distancesDict[s]
+        except:
+            print(cromo)
         sum = sum + int(val)
 
     return sum
-
- # for k in range(0, distancesSIZE):
- #            if j + 1 < cromolen:
- #                if distances[k][0] == cromo[j] and distances[k][1] == cromo[j+1]:
- #                    sum = sum + int(distances[k][2])
- #                    break
- #            else:
- #                break
 
 
 def genAlphabeticRoute(citiestotal, distances):

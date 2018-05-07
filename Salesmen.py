@@ -47,7 +47,7 @@ def addCitiestoSalesmen(citiestotal, Salesmanroute, salesmentotal, distancesales
                         alphabeticRoute[c][1] = 0
                         Salesmanroute[i].pop(a - 2)
 
-    return  Salesmanroute
+    return Salesmanroute
 
 
 def addFlag(alphabeticRoute, citiestotal):
