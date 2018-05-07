@@ -1,8 +1,8 @@
 import routes
 
-def addCitiestoSalesmen(citiestotal, Salesmanroute, salesmentotal, distancesalesmen, alphabeticRoute, distancesDict):
+def addCitiestoSalesmen(citiestotal, Salesmanroute, salesmentotalMax, distancesalesmen, alphabeticRoute, distancesDict):
 
-    for i in range(0, salesmentotal):
+    for i in range(0, salesmentotalMax):
         l = []
         Salesmanroute.append(l)
         Salesmanroute[i].append('AA')

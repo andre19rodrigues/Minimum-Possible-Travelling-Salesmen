@@ -15,7 +15,6 @@ popsize = 100
 nGenerations = 1000
 start_end_point = 'AA'
 distancesDict = {}
-Msalesman = 50
 DMsalesman = 100
 
 before = datetime.datetime.now()
@@ -59,9 +58,9 @@ for i in range(0, popsize):
     aRoute = random.sample(alphabeticRoute, len(alphabeticRoute))
     #print('aroute   '+str(aRoute))
     salesmenRoute = []
-    salesmenRoute = sm.addCitiestoSalesmen(citiestotal, salesmenRoute, Msalesman, DMsalesman, aRoute, distancesDict)
+    salesmenRoute = sm.addCitiestoSalesmen(citiestotal, salesmenRoute, citiestotal, DMsalesman, aRoute, distancesDict)
 
-    for i in range(Msalesman, 0, -1):
+    for i in range(citiestotal, 0, -1):
         try:
             if (len(salesmenRoute[i])==1):
                 del(salesmenRoute[i])
@@ -74,17 +73,20 @@ for i in range(0, popsize):
 
     population.append(salesmenRoute)
 
+
 print(population)
 
 
 pop = AGSalesman.evolvePopulation_multipleSalesman(population, distancesDict, DMsalesman)
 for i in range(1, nGenerations):
-    print(pop)
+    #print(pop)
     print(i)
     pop = AGSalesman.evolvePopulation_multipleSalesman(pop, distancesDict, DMsalesman)
 
 print(pop[0])
-print(len(pop[0]))
+
+print('\nInitial: '+str(len(population[0])) + ' Salesmen  |  '+ str(routes.getTotalSalesmenDistance(population[0]))+ ' Total distance')
+print('Optimal: '+str(len(pop[0])) + ' Salesmen  |  '+ str(routes.getTotalSalesmenDistance(pop[0]))+ ' Total distance')
 
 #routes.getOptimalTS1Salesman(start_end_point, citiestotal, distances, popsize, nGenerations, distancesDict)
 

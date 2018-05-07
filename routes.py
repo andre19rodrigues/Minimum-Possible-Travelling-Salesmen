@@ -1,17 +1,17 @@
 import AlgGen as AG
 
-def getFitness(cromo, distancesDict):
+def getFitness(chromo, distancesDict):
 
 
     sum = 0
-    cromolen = len(cromo)
+    cromolen = len(chromo)
 
     for j in range(0, cromolen - 2):
-        s = (cromo[j], cromo[j + 1])
+        s = (chromo[j], chromo[j + 1])
         try:
             val = distancesDict[s]
         except:
-            print(cromo)
+            print(chromo)
         sum = sum + int(val)
 
     return sum
@@ -45,3 +45,22 @@ def getOptimalTS1Salesman(start_end_point, citiestotal, distances, popsize, nGen
         print(i)
         print(pop)
         pop = AG.evolvePopulation(pop, distancesDict, citiestotal, False)
+
+
+def getTotalSalesmenDistance(population):
+
+    sum = 0
+    for i in range(0, len(population)):
+        sum = sum + int(population[i][-1])
+
+    return sum
+
+def checkAllcities(population, cities):
+
+    for i in range(0, len(cities)):
+        if cities[i] in population:
+            val = True
+        if val == False:
+            return False
+        else:
+            val = False

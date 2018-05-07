@@ -33,16 +33,16 @@ def Crossover(motherCromo, fatherCromo, citiestotal):
 
     return child
 
-def randomMutation(cromo, citiesTotal):
+def randomMutation(chromo, citiesTotal):
     for i in range(1, citiesTotal-1):
         if random.random() < mutationProb:
             val = i
             while val == i:
                 val = random.randint(1, citiesTotal - 2)
                 # val = random.randrange(0, cromo_size-1, i)
-            cromo[i], cromo[val] = cromo[val], cromo[i]
+            chromo[i], chromo[val] = chromo[val], chromo[i]
 
-    return cromo
+    return chromo
 
 
 def proporcionalSelection(population, prob_array, popsize):
