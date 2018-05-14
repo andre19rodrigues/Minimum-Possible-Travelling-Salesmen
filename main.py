@@ -3,91 +3,69 @@ import datetime
 import random
 
 import AlgGen as AG
+import GenerateRandomLocations
 import Salesmen as sm
 import routes
 import algGenSalesmen as AGSalesman
+
+
 distances = []
 citiestotal = 0
 citinames = []
 population = []
 salesmenRoute = []
 popsize = 100
-nGenerations = 1000
+nGenerations = 50
 start_end_point = 'AA'
 distancesDict = {}
 DMsalesman = 100
 
-before = datetime.datetime.now()
 
-def readdata():
+def multiple_salesman():
+    for i in range(0, popsize):
+        alphabeticRoute = routes.genAlphabeticRoute(citiestotal, distances)
+        aRoute = random.sample(alphabeticRoute, len(alphabeticRoute))
+        # print('aroute   '+str(aRoute))
+        salesmenRoute = []
+        salesmenRoute = sm.addCitiestoSalesmen(citiestotal, salesmenRoute, citiestotal, DMsalesman, aRoute, distancesDict)
 
-    global citiestotal
+        for i in range(citiestotal, 0, -1):
+            try:
+                if (len(salesmenRoute[i]) == 1):
+                    del (salesmenRoute[i])
+            except:
+                xyz = 0
 
-    with open('locations.csv', 'r') as csvfile:
-        loc = csv.reader(csvfile)
+        for i in range(0, len(salesmenRoute)):
+            salesmenRoute[i].append(routes.getFitness(salesmenRoute[i], distancesDict))
+            # print(str(salesmenRoute[i]) +' '+ str(routes.getFitness(salesmenRoute[i], distancesDict)))
 
-        a = 65
-        b = 65
-        c = 65
-        d = 65
-        for row in loc:
-            citiestotal = len(row)
-            for i in range(0, citiestotal):
-                city = [chr(a)+chr(b), chr(c)+chr(d), row[i]]
-                distances.append(city)
-                distancesDict[(chr(a)+chr(b), chr(c)+chr(d))] = row[i]
-                if d is not 90:
-                    d += 1
-                else:
-                    c += 1
-                    d = 65
+        population.append(salesmenRoute)
 
-            c = 65
-            d = 65
-            if b is not 90:
-                b += 1
-            else:
-                a += 1
-                b = 65
+    # print(population)
 
+    pop = AGSalesman.evolvePopulation_multipleSalesman(population, distancesDict, DMsalesman)
+    for i in range(1, nGenerations):
+        # print(pop)
+        print(i)
+        pop = AGSalesman.evolvePopulation_multipleSalesman(pop, distancesDict, DMsalesman)
 
-readdata()
+    print('\nInitial: ' + str(len(population[0])) + ' Salesmen  |  ' + str(
+        routes.getTotalSalesmenDistance(population[0])) + ' Total distance')
+    print('Optimal: ' + str(len(pop[0])) + ' Salesmen  |  ' + str(
+        routes.getTotalSalesmenDistance(pop[0])) + ' Total distance')
 
-for i in range(0, popsize):
-    alphabeticRoute = routes.genAlphabeticRoute(citiestotal, distances)
-    aRoute = random.sample(alphabeticRoute, len(alphabeticRoute))
-    #print('aroute   '+str(aRoute))
-    salesmenRoute = []
-    salesmenRoute = sm.addCitiestoSalesmen(citiestotal, salesmenRoute, citiestotal, DMsalesman, aRoute, distancesDict)
+if __name__ == '__main__':
+    before = datetime.datetime.now()
+    print(datetime.datetime.now() - before)
 
-    for i in range(citiestotal, 0, -1):
-        try:
-            if (len(salesmenRoute[i])==1):
-                del(salesmenRoute[i])
-        except:
-            xyz = 0
+    # read data from file
+    distancesDict, distances, citiestotal = GenerateRandomLocations.readdata()
 
-    for i in range(0, len(salesmenRoute)):
-        salesmenRoute[i].append(routes.getFitness(salesmenRoute[i], distancesDict))
-        #print(str(salesmenRoute[i]) +' '+ str(routes.getFitness(salesmenRoute[i], distancesDict)))
+    multiple_salesman()
 
-    population.append(salesmenRoute)
+    # classical SalesMan
+    # routes.getOptimalTS1Salesman(start_end_point, citiestotal, distances, popsize, nGenerations, distancesDict)
 
 
-print(population)
 
-
-pop = AGSalesman.evolvePopulation_multipleSalesman(population, distancesDict, DMsalesman)
-for i in range(1, nGenerations):
-    #print(pop)
-    print(i)
-    pop = AGSalesman.evolvePopulation_multipleSalesman(pop, distancesDict, DMsalesman)
-
-print(pop[0])
-
-print('\nInitial: '+str(len(population[0])) + ' Salesmen  |  '+ str(routes.getTotalSalesmenDistance(population[0]))+ ' Total distance')
-print('Optimal: '+str(len(pop[0])) + ' Salesmen  |  '+ str(routes.getTotalSalesmenDistance(pop[0]))+ ' Total distance')
-
-#routes.getOptimalTS1Salesman(start_end_point, citiestotal, distances, popsize, nGenerations, distancesDict)
-
-print(datetime.datetime.now() - before)

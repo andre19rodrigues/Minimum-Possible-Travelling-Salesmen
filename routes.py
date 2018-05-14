@@ -8,10 +8,7 @@ def getFitness(chromo, distancesDict):
 
     for j in range(0, cromolen - 2):
         s = (chromo[j], chromo[j + 1])
-        try:
-            val = distancesDict[s]
-        except:
-            print(chromo)
+        val = distancesDict[s]
         sum = sum + int(val)
 
     return sum
@@ -38,13 +35,14 @@ def getOptimalTS1Salesman(start_end_point, citiestotal, distances, popsize, nGen
     alphabeticRoute.append(start_end_point)  # on the last position we append the start_end_point
 
     pop = AG.init_population(alphabeticRoute, citiestotal, distancesDict, popsize, start_end_point)
-    print(pop)
+    #print(pop)
     pop = AG.evolvePopulation(pop, distancesDict, citiestotal, True)
-    print(pop)
-    for i in range(0, nGenerations):
+    for i in range(1, nGenerations):
+        #print(pop)
         print(i)
-        print(pop)
         pop = AG.evolvePopulation(pop, distancesDict, citiestotal, False)
+
+    print(pop[0])
 
 
 def getTotalSalesmenDistance(population):

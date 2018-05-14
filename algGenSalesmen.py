@@ -3,6 +3,11 @@ import routes
 mutationProb = 0.2
 crossoverProb = 0.4
 
+# this method consist in,
+#   --> firstly, select randomly two sales man from the set of all sales man in one chromossome
+#   --> secondly, remove one city from the first selected sales man and insert it in the other salesman selected.
+#   --> finally, do some mutatation to improve the result
+
 def Crossover(chromo, sizeCromo, distanceDict, maxKM):
     # select two random chromo from chromo array
     rand = random.randint(0, (sizeCromo - 2))
@@ -55,9 +60,10 @@ def Crossover(chromo, sizeCromo, distanceDict, maxKM):
             chromo.pop(rand)
             return chromo
 
+    # CromoRemove size > 3
     else:
-        #CromoRemove size > 3
         minMax = 99999
+        # if the the fitness from the salesman that we removed the citie is greater than the max of km possible, do mutation
         if routes.getFitness(cromoRemove[:len(cromoRemove)-1], distanceDict) > maxKM:
             for i in range(0, int(mutationProb*100*len(cromoRemove))):
                 r = randomMutation(cromoRemove)
@@ -66,11 +72,14 @@ def Crossover(chromo, sizeCromo, distanceDict, maxKM):
                     minMax = fit
                     r[len(r)-1] = fit
                     min = r[:]
+            # if after the mutation it wasnt possible to make the fitness lesser than the km possible
+            # return the chromo untouched
             if minMax > maxKM:
                 return chromo
 
             else:
                 minMax2 = 99999
+                # if the remotion was possible and the fitness of the other sales man is greather than the max KM do mutation
                 if routes.getFitness(cromoADD[:len(cromoADD)-1], distanceDict) > maxKM:
                     for i in range(0, int(mutationProb*100*len(cromoRemove))):
                         r = randomMutation(cromoADD)
@@ -86,6 +95,8 @@ def Crossover(chromo, sizeCromo, distanceDict, maxKM):
                         chromo[rand] = min
                         chromo[val] = min2
                         return chromo
+                # if the fitness is less or eq to the max KM, calculate fitness and return chromo with new sales men
+                #
                 else:
                     fit = routes.getFitness(min[:len(min) - 1], distanceDict)
                     min[len(min) - 1] = fit
@@ -94,7 +105,8 @@ def Crossover(chromo, sizeCromo, distanceDict, maxKM):
                     cromoADD[len(cromoADD) - 1] = fit
                     chromo[val] = cromoADD
                     return chromo
-
+        #this happens when the fitness from the removed salesman is less than the max KM
+        # so we just calculate the fitness to new added salesman
         else:
             minMax = 99999
             if routes.getFitness(cromoADD[:len(cromoADD)-1], distanceDict) > maxKM:
@@ -105,14 +117,17 @@ def Crossover(chromo, sizeCromo, distanceDict, maxKM):
                         minMax = fit
                         r[len(r) - 1] = fit
                         min2 = r[:]
+                # if the mutatain couldnt reduce the fitness, return chromo unchanged
                 if minMax > maxKM:
                     return chromo
+                # if mutation was sucefull return updated chromo
                 else:
                     fit = routes.getFitness(min2[:len(min2)-1], distanceDict)
                     min2[len(min2)-1] = fit
                     chromo[val] = min2
                     chromo[rand] = cromoRemove
                     return chromo
+            # if the removed and salesman already has less than max KM
             else:
                 fit = routes.getFitness(cromoRemove[:len(cromoRemove) - 1], distanceDict)
                 cromoRemove[len(cromoRemove) - 1] = fit
@@ -146,7 +161,6 @@ def evolvePopulation_multipleSalesman(population, distancesDict, maxKM):
 
 
     for i in range(1, popsize):
-
         if random.random() <= crossoverProb:
             sizeCromo = len(population[i])
             if sizeCromo is not 1:
@@ -161,9 +175,9 @@ def evolvePopulation_multipleSalesman(population, distancesDict, maxKM):
     return new_pop
 
 def elitism_multipleSalesman(population, popsize):
-    bestSize = len(population[0])
-    bestIndividual = population[0]
-    sumBestFitness = 0
+    bestSize = len(population[0]) # chromo size
+    bestIndividual = population[0] # best set of salesman
+    sumBestFitness = 0 # sum of all salesman fitness in one set
     for i in bestIndividual:
         s = len(i)
         sumBestFitness = sumBestFitness + i[s-1]
