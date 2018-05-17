@@ -4,6 +4,14 @@ import routes
 crossoverProb = 0.5
 mutationProb = 0.2
 
+
+
+# the crossover here, takes two chromos
+# then build a child
+# the process of crossover is done by fill the child with the motherchromo when it is between the 2 random values
+# if it isnt, go check the oposite and fill
+#
+# after this, the child isnt complete, so we grab on the fatherCromo and fill the missing child`s missing spaces with father cromo
 def Crossover(motherCromo, fatherCromo, citiestotal):
 
     a = random.randint(0, citiestotal-1)
@@ -15,7 +23,7 @@ def Crossover(motherCromo, fatherCromo, citiestotal):
         child.append(999999)
 
     child.append(motherCromo[citiestotal])
-    
+
     for i in range(1, citiestotal):
         if (a < b and i > a and i < b):
             child[i] = motherCromo[i]
@@ -33,6 +41,7 @@ def Crossover(motherCromo, fatherCromo, citiestotal):
 
     return child
 
+# go on chromo and swaps to genes until the end
 def randomMutation(cromo, citiesTotal):
     for i in range(1, citiesTotal-1):
         if random.random() < mutationProb:
@@ -44,9 +53,9 @@ def randomMutation(cromo, citiesTotal):
 
     return cromo
 
-
+# this method is based on roullete pick, so we have the probabilities of each indiviual, and then the propabilitie of one
+# indivual being selected its equal to his fitness
 def proporcionalSelection(population, prob_array, popsize):
-    # roullete pick
     rand = random.random()
     i = 0
     s = prob_array[0]
@@ -59,15 +68,10 @@ def proporcionalSelection(population, prob_array, popsize):
 
     return population[i]
 
- # receives a population and the number of individuals to select
- # returns k selected
+ # receives a population and return the best indivual
 def elitism(population, citiesTotal):
     population.sort(key=itemgetter(citiesTotal + 1))
     return population[0]
-
-
-
-
 
 
 def init_population(alphabeticRoute, citiestotal, distances, popsize, start_end_point):
@@ -88,7 +92,9 @@ def init_population(alphabeticRoute, citiestotal, distances, popsize, start_end_
 
 
 
-
+# the best of the last generation, always goes to the new one,
+# its also calculated the probability for each indivual to do the proporcional selection
+# finally every new child is mutated
 def evolvePopulation(population, distances, citiestotal, first):
     #calculate fitness for every indivual in population
     new_pop = []
