@@ -15,7 +15,7 @@ citiestotal = 0
 citinames = []
 population = []
 salesmenRoute = []
-popsize = 100
+popsize = 20
 nGenerations = 20
 start_end_point = 'AA'
 distancesDict = {}
@@ -139,13 +139,13 @@ if __name__ == '__main__':
     readdata()
     GeneratePopulation()
     print(population)
-    pop, savefirstbest = OptimizeSalesmen()
-    DrawGraph(pop)
-    print(pop[0])
-    print('\nInitial best: ' + str(len(savefirstbest)) + ' Salesmen  |  ' + str(
-        routes.getTotalSalesmenDistance(savefirstbest)) + ' Total distance')
-    print('Final best: ' + str(len(pop[0])) + ' Salesmen  |  ' + str(
-        routes.getTotalSalesmenDistance(pop[0])) + ' Total distance')
+    # pop, savefirstbest = OptimizeSalesmen()
+    # DrawGraph(pop)
+    # print(pop[0])
+    # print('\nInitial best: ' + str(len(savefirstbest)) + ' Salesmen  |  ' + str(
+    #     routes.getTotalSalesmenDistance(savefirstbest)) + ' Total distance')
+    # print('Final best: ' + str(len(pop[0])) + ' Salesmen  |  ' + str(
+    #     routes.getTotalSalesmenDistance(pop[0])) + ' Total distance')
 
     #Call to get optimal route without salesmen
     routes.getOptimalTS1Salesman(start_end_point, citiestotal, distances, popsize, nGenerations, distancesDict)

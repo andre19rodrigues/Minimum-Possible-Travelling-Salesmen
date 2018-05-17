@@ -2,7 +2,7 @@ import random
 from operator import itemgetter
 import routes
 crossoverProb = 0.5
-mutationProb = 0.5
+mutationProb = 0.2
 
 def Crossover(motherCromo, fatherCromo, citiestotal):
 
@@ -15,7 +15,7 @@ def Crossover(motherCromo, fatherCromo, citiestotal):
         child.append(999999)
 
     child.append(motherCromo[citiestotal])
-
+    
     for i in range(1, citiestotal):
         if (a < b and i > a and i < b):
             child[i] = motherCromo[i]
@@ -33,16 +33,16 @@ def Crossover(motherCromo, fatherCromo, citiestotal):
 
     return child
 
-def randomMutation(chromo, citiesTotal):
+def randomMutation(cromo, citiesTotal):
     for i in range(1, citiesTotal-1):
         if random.random() < mutationProb:
             val = i
             while val == i:
                 val = random.randint(1, citiesTotal - 2)
                 # val = random.randrange(0, cromo_size-1, i)
-            chromo[i], chromo[val] = chromo[val], chromo[i]
+            cromo[i], cromo[val] = cromo[val], cromo[i]
 
-    return chromo
+    return cromo
 
 
 def proporcionalSelection(population, prob_array, popsize):
@@ -64,6 +64,10 @@ def proporcionalSelection(population, prob_array, popsize):
 def elitism(population, citiesTotal):
     population.sort(key=itemgetter(citiesTotal + 1))
     return population[0]
+
+
+
+
 
 
 def init_population(alphabeticRoute, citiestotal, distances, popsize, start_end_point):
@@ -89,6 +93,10 @@ def evolvePopulation(population, distances, citiestotal, first):
     #calculate fitness for every indivual in population
     new_pop = []
     popsize = len(population)
+    if not first:
+        for i in range(1, popsize): # starts at 1 because the first one alredy comes with fitness
+            fit = routes.getFitness(population[i], distances)
+            population[i].append(fit)
 
     # only the best of each gen goes directly to next gen
     elit_cromo = elitism(population, citiestotal)
@@ -108,19 +116,12 @@ def evolvePopulation(population, distances, citiestotal, first):
             parent1 = proporcionalSelection(population, prob_array, popsize)
             parent2 = proporcionalSelection(population, prob_array, popsize)
 
-            rand = random.random()
-            if rand < crossoverProb:
-                child = Crossover(parent1, parent2, citiestotal)
-                new_pop.append(child)
-            else:
-                rand2 = random.randint(0,1)
-                if rand2 == 0:
-                    new_pop.append(parent1)
-                else:
-                    new_pop.append(parent2)
+            child = Crossover(parent1, parent2, citiestotal)
+            new_pop.append(child)
 
     for i in range(1, len(new_pop)):
         cromoMutation = randomMutation(new_pop[i], citiestotal)
         new_pop[i] = cromoMutation
 
     return new_pop
+
