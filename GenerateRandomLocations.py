@@ -4,7 +4,7 @@ import numpy
 
 
 f = open('locations.csv', 'w+')
-total = 200
+total = 50
 
 for i in range(0, total):
     for j in range(0, total):

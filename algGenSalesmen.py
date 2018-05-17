@@ -1,14 +1,12 @@
 import random
 import routes
-mutationProb = 0.2
-crossoverProb = 0.4
 
 # this method consist in,
 #   --> firstly, select randomly two sales man from the set of all sales man in one chromossome
 #   --> secondly, remove one city from the first selected sales man and insert it in the other salesman selected.
 #   --> finally, do some mutatation to improve the result
 
-def Crossover(chromo, sizeCromo, distanceDict, maxKM):
+def Crossover(chromo, sizeCromo, distanceDict, maxKM, mutationProb, crossoverProb):
     # select two random chromo from chromo array
     rand = random.randint(0, (sizeCromo - 2))
     val = rand
@@ -40,7 +38,7 @@ def Crossover(chromo, sizeCromo, distanceDict, maxKM):
         minMax2 = 99999
         if routes.getFitness(cromoADD[:len(cromoADD)-1], distanceDict) > maxKM:
             for i in range(0, int(mutationProb*100*len(cromoADD))):
-                r = randomMutation(cromoADD)
+                r = randomMutation(cromoADD, mutationProb)
                 fit = routes.getFitness(r[:len(r)-1], distanceDict)
                 if ((fit <= maxKM) and (fit < minMax2)):
                     minMax2 = fit
@@ -66,7 +64,7 @@ def Crossover(chromo, sizeCromo, distanceDict, maxKM):
         # if the the fitness from the salesman that we removed the citie is greater than the max of km possible, do mutation
         if routes.getFitness(cromoRemove[:len(cromoRemove)-1], distanceDict) > maxKM:
             for i in range(0, int(mutationProb*100*len(cromoRemove))):
-                r = randomMutation(cromoRemove)
+                r = randomMutation(cromoRemove, mutationProb)
                 fit = routes.getFitness(r[:len(r)-1], distanceDict)
                 if ((fit <= maxKM) and (fit < minMax)):
                     minMax = fit
@@ -82,7 +80,7 @@ def Crossover(chromo, sizeCromo, distanceDict, maxKM):
                 # if the remotion was possible and the fitness of the other sales man is greather than the max KM do mutation
                 if routes.getFitness(cromoADD[:len(cromoADD)-1], distanceDict) > maxKM:
                     for i in range(0, int(mutationProb*100*len(cromoRemove))):
-                        r = randomMutation(cromoADD)
+                        r = randomMutation(cromoADD, mutationProb)
                         fit = routes.getFitness(r[:len(r)-1], distanceDict)
                         if ((fit <= maxKM) and (fit < minMax2)):
                             minMax2 = fit
@@ -111,7 +109,7 @@ def Crossover(chromo, sizeCromo, distanceDict, maxKM):
             minMax = 99999
             if routes.getFitness(cromoADD[:len(cromoADD)-1], distanceDict) > maxKM:
                 for i in range(0, int(mutationProb*100*len(cromoRemove))):
-                    r = randomMutation(cromoADD)
+                    r = randomMutation(cromoADD, mutationProb)
                     fit = routes.getFitness(r[:len(r) - 1], distanceDict)
                     if ((fit <= maxKM) and (fit < minMax)):
                         minMax = fit
@@ -137,7 +135,7 @@ def Crossover(chromo, sizeCromo, distanceDict, maxKM):
                 chromo[val] = cromoADD
                 return chromo
 
-def randomMutation(chromo):
+def randomMutation(chromo, mutationProb):
     lcromo = len(chromo)
 
     for i in range(1, lcromo-3):
@@ -150,7 +148,8 @@ def randomMutation(chromo):
     return chromo
 
 
-def evolvePopulation_multipleSalesman(population, distancesDict, maxKM):
+def evolvePopulation_multipleSalesman(population, distancesDict, maxKM, mutationProb, crossoverProb):
+
     #calculate fitness for every indivual in population
     new_pop = []
     popsize = len(population)
@@ -164,7 +163,7 @@ def evolvePopulation_multipleSalesman(population, distancesDict, maxKM):
         if random.random() <= crossoverProb:
             sizeCromo = len(population[i])
             if sizeCromo is not 1:
-                child = Crossover(population[i], sizeCromo, distancesDict, maxKM)
+                child = Crossover(population[i], sizeCromo, distancesDict, maxKM, mutationProb, crossoverProb)
 
                 new_pop.append(child)
             else:

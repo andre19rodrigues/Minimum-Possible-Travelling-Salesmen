@@ -2,7 +2,7 @@ import random
 from operator import itemgetter
 import routes
 crossoverProb = 0.5
-mutationProb = 0.2
+mutationProb = 0.5
 
 def Crossover(motherCromo, fatherCromo, citiestotal):
 
@@ -66,10 +66,6 @@ def elitism(population, citiesTotal):
     return population[0]
 
 
-
-
-
-
 def init_population(alphabeticRoute, citiestotal, distances, popsize, start_end_point):
     population = []
     for i in range(0, popsize):
@@ -93,10 +89,6 @@ def evolvePopulation(population, distances, citiestotal, first):
     #calculate fitness for every indivual in population
     new_pop = []
     popsize = len(population)
-    # if not first:
-    #     for i in range(1, popsize): # starts at 1 because the first one alredy comes with fitness
-    #         fit = routes.getFitness(population[i], distances)
-    #         population[i].append(fit)
 
     # only the best of each gen goes directly to next gen
     elit_cromo = elitism(population, citiestotal)
