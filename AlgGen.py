@@ -5,7 +5,6 @@ crossoverProb = 0.5
 mutationProb = 0.2
 
 
-
 # the crossover here, takes two chromos
 # then build a child
 # the process of crossover is done by fill the child with the motherchromo when it is between the 2 random values
@@ -48,7 +47,6 @@ def randomMutation(cromo, citiesTotal):
             val = i
             while val == i:
                 val = random.randint(1, citiesTotal - 2)
-                # val = random.randrange(0, cromo_size-1, i)
             cromo[i], cromo[val] = cromo[val], cromo[i]
 
     return cromo

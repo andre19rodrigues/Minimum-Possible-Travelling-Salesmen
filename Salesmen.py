@@ -48,10 +48,3 @@ def addCitiestoSalesmen(citiestotal, Salesmanroute, salesmentotalMax, distancesa
                         Salesmanroute[i].pop(a - 2)
 
     return Salesmanroute
-
-
-def addFlag(alphabeticRoute, citiestotal):
-    for i in range(0, citiestotal-1):
-        alphabeticRoute[i].append(0)
-
-    return alphabeticRoute

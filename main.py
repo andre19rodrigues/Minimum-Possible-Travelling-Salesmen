@@ -1,8 +1,6 @@
 import csv
 import datetime
 import random
-
-import AlgGen as AG
 import Salesmen as sm
 import routes
 import algGenSalesmen as AGSalesman
@@ -15,15 +13,18 @@ citiestotal = 0
 citinames = []
 population = []
 salesmenRoute = []
-popsize = 20
-nGenerations = 20
+popsize = 100
+nGenerations = 100000
 start_end_point = 'AA'
 distancesDict = {}
-DMsalesman = 80
+DMsalesman = 50
 mutationProb = 0.5
 crossoverProb = 0.5
 
 before = datetime.datetime.now()
+
+#shuffle because consecutive colors are very similar
+clrs = random.sample(Colors.colors, len(Colors.colors))
 
 def readdata():
 
@@ -80,44 +81,14 @@ def GeneratePopulation():
 
 
 
-def OptimizeSalesmen():
-    f = open('output.csv', 'w+')
-    global mutationProb
-    pop = AGSalesman.evolvePopulation_multipleSalesman(population, distancesDict, DMsalesman, mutationProb, crossoverProb)
-
-    counter = 0
-    ant = []
-    for i in range(1, nGenerations):
-        print(i)
-
-        if(i > int(nGenerations*0.2) and i <= int(nGenerations*0.4)):
-            mutationProb = 0.4
-        elif(i > int(nGenerations*0.4) and i <= int(nGenerations*0.6)):
-            mutationProb = 0.3
-        elif (i > int(nGenerations * 0.6) and i <= int(nGenerations * 0.8)):
-            mutationProb = 0.2
-        elif (i > int(nGenerations * 0.8)):
-            mutationProb = 0.1
-
-        if (i == 1):
-            savefirstbest = pop[0][:]
-        f.write(str(len(pop[0])) + ','+ str(routes.getTotalSalesmenDistance(pop[0]))+'\n')
-        pop = AGSalesman.evolvePopulation_multipleSalesman(pop, distancesDict, DMsalesman, mutationProb, crossoverProb)
-
-    return pop, savefirstbest
-
-
-def DrawGraph(pop):
+def DrawGraph(pop, counter):
     G = nx.Graph()
-    for i in range(0, len(pop[0])):
-        for j in range(0, len(pop[0][i]) - 2):
-            G.add_node(pop[0][i][j])
-            G.add_node(pop[0][i][j + 1])
-            G.add_edge(pop[0][i][j], pop[0][i][j + 1])
+    for i in range(0, len(pop)):
+        for j in range(0, len(pop[i]) - 2):
+            G.add_node(pop[i][j])
+            G.add_node(pop[i][j + 1])
+            G.add_edge(pop[i][j], pop[i][j + 1])
 
-
-    #shuffle because consecutive colors are very similar
-    clrs = random.sample(Colors.colors, len(Colors.colors))
 
     color_map = []
     for node in G:
@@ -126,28 +97,69 @@ def DrawGraph(pop):
             #warehouse is always red
             color_map.append('red')
         else:
-            for i in range(0, len(pop[0])):
-                if node in pop[0][i]:
+            for i in range(0, len(pop)):
+                if node in pop[i]:
                     color_map.append(clrs[i])
 
     nx.draw(G, with_labels=True, font_weight='bold', node_color=color_map)
     plt.show()
+    #Output as a file
+    #plt.savefig(str(counter)+'.png')
+    plt.close()
+
+
+
+def OptimizeSalesmen():
+    f = open('output.csv', 'w+')
+    global mutationProb
+
+    pop = AGSalesman.evolvePopulation_multipleSalesman(population, distancesDict, DMsalesman, mutationProb, crossoverProb)
+
+    for i in range(1, nGenerations):
+        print(i)
+
+        if(i > int(nGenerations*0.3) and i <= int(nGenerations*0.5)):
+            mutationProb = 0.4
+        elif(i > int(nGenerations*0.5) and i <= int(nGenerations*0.7)):
+            mutationProb = 0.3
+        elif (i > int(nGenerations * 0.7) and i <= int(nGenerations * 0.9)):
+            mutationProb = 0.2
+        elif (i > int(nGenerations * 0.9)):
+            mutationProb = 0.1
+
+        if (i == 1):
+            savefirstbest = pop[0][:]
+        f.write(str(len(pop[0])) + ','+ str(routes.getTotalSalesmenDistance(pop[0]))+'\n')
+        pop = AGSalesman.evolvePopulation_multipleSalesman(pop, distancesDict, DMsalesman, mutationProb, crossoverProb)
+
+        #Uncomment the next line to draw the graph of every generation. The execution will be slower
+        #DrawGraph(pop[0], i)
+
+    return pop, savefirstbest
+
 
 
 if __name__ == '__main__':
 
     readdata()
     GeneratePopulation()
-    print(population)
-    # pop, savefirstbest = OptimizeSalesmen()
-    # DrawGraph(pop)
-    # print(pop[0])
-    # print('\nInitial best: ' + str(len(savefirstbest)) + ' Salesmen  |  ' + str(
-    #     routes.getTotalSalesmenDistance(savefirstbest)) + ' Total distance')
-    # print('Final best: ' + str(len(pop[0])) + ' Salesmen  |  ' + str(
-    #     routes.getTotalSalesmenDistance(pop[0])) + ' Total distance')
+    print(population) #print initial population
+
+    pop, savefirstbest = OptimizeSalesmen() #Main function to reduce number of salesmen and distances size per salesmen
+
+    #The zero as argument here is useless, but if you want to save the graph of each generation, the function expects to
+    #receive as "counter" the generation number to be used in the png file name
+    DrawGraph(savefirstbest, 0)     #First optimal solution
+    DrawGraph(pop[0], 0)            #Optimal solucion n generations after
+
+    print(pop[0])
+    print('\nInitial best: ' + str(len(savefirstbest)) + ' Salesmen  |  ' + str(
+        routes.getTotalSalesmenDistance(savefirstbest)) + ' Total distance')
+    print('Final best: ' + str(len(pop[0])) + ' Salesmen  |  ' + str(
+        routes.getTotalSalesmenDistance(pop[0])) + ' Total distance')
 
     #Call to get optimal route without salesmen
-    routes.getOptimalTS1Salesman(start_end_point, citiestotal, distances, popsize, nGenerations, distancesDict)
+    #routes.getOptimalTS1Salesman(start_end_point, citiestotal, distances, popsize, nGenerations, distancesDict)
 
+    #print the execution time
     print(datetime.datetime.now() - before)
