@@ -14,10 +14,10 @@ citinames = []
 population = []
 salesmenRoute = []
 popsize = 100
-nGenerations = 100000
+nGenerations = 10000
 start_end_point = 'AA'
 distancesDict = {}
-DMsalesman = 50
+DMsalesman = 100
 mutationProb = 0.5
 crossoverProb = 0.5
 
@@ -118,14 +118,14 @@ def OptimizeSalesmen():
     for i in range(1, nGenerations):
         print(i)
 
-        if(i > int(nGenerations*0.3) and i <= int(nGenerations*0.5)):
-            mutationProb = 0.4
-        elif(i > int(nGenerations*0.5) and i <= int(nGenerations*0.7)):
-            mutationProb = 0.3
-        elif (i > int(nGenerations * 0.7) and i <= int(nGenerations * 0.9)):
-            mutationProb = 0.2
-        elif (i > int(nGenerations * 0.9)):
-            mutationProb = 0.1
+        # if(i > int(nGenerations*0.3) and i <= int(nGenerations*0.5)):
+        #     mutationProb = 0.4
+        # elif(i > int(nGenerations*0.5) and i <= int(nGenerations*0.7)):
+        #     mutationProb = 0.3
+        # elif (i > int(nGenerations * 0.7) and i <= int(nGenerations * 0.9)):
+        #     mutationProb = 0.2
+        # elif (i > int(nGenerations * 0.9)):
+        #     mutationProb = 0.1
 
         if (i == 1):
             savefirstbest = pop[0][:]

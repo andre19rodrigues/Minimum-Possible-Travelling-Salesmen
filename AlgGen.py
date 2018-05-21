@@ -2,7 +2,7 @@ import random
 from operator import itemgetter
 import routes
 crossoverProb = 0.5
-mutationProb = 0.2
+mutationProb = 0.5
 
 
 # the crossover here, takes two chromos
@@ -42,6 +42,7 @@ def Crossover(motherCromo, fatherCromo, citiestotal):
 
 # go on chromo and swaps to genes until the end
 def randomMutation(cromo, citiesTotal):
+
     for i in range(1, citiesTotal-1):
         if random.random() < mutationProb:
             val = i
@@ -93,7 +94,7 @@ def init_population(alphabeticRoute, citiestotal, distances, popsize, start_end_
 # the best of the last generation, always goes to the new one,
 # its also calculated the probability for each indivual to do the proporcional selection
 # finally every new child is mutated
-def evolvePopulation(population, distances, citiestotal, first):
+def evolvePopulation(population, distances, citiestotal, first, nGenerations):
     #calculate fitness for every indivual in population
     new_pop = []
     popsize = len(population)
@@ -122,6 +123,15 @@ def evolvePopulation(population, distances, citiestotal, first):
 
             child = Crossover(parent1, parent2, citiestotal)
             new_pop.append(child)
+
+    if(i > int(nGenerations*0.3) and i <= int(nGenerations*0.5)):
+        mutationProb = 0.4
+    elif(i > int(nGenerations*0.5) and i <= int(nGenerations*0.7)):
+        mutationProb = 0.3
+    elif (i > int(nGenerations * 0.7) and i <= int(nGenerations * 0.9)):
+        mutationProb = 0.2
+    elif (i > int(nGenerations * 0.9)):
+        mutationProb = 0.1
 
     for i in range(1, len(new_pop)):
         cromoMutation = randomMutation(new_pop[i], citiestotal)

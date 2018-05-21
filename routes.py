@@ -34,11 +34,11 @@ def getOptimalTS1Salesman(start_end_point, citiestotal, distances, popsize, nGen
 
     pop = AG.init_population(alphabeticRoute, citiestotal, distancesDict, popsize, start_end_point)
     #print(pop)
-    pop = AG.evolvePopulation(pop, distancesDict, citiestotal, True)
+    pop = AG.evolvePopulation(pop, distancesDict, citiestotal, True, nGenerations)
     for i in range(1, nGenerations):
         #print(pop)
         print(i)
-        pop = AG.evolvePopulation(pop, distancesDict, citiestotal, False)
+        pop = AG.evolvePopulation(pop, distancesDict, citiestotal, False, nGenerations)
 
     print(pop[0])
 
