@@ -13,8 +13,16 @@ mutationProb = 0.5
 # after this, the child isnt complete, so we grab on the fatherCromo and fill the missing child`s missing spaces with father cromo
 def Crossover(motherCromo, fatherCromo, citiestotal):
 
-    a = random.randint(0, citiestotal-1)
-    b = random.randint(0, citiestotal-1)
+    # a = random.randint(0, citiestotal-1)
+    # b = random.randint(0, citiestotal-1)
+
+    rands = random.sample(range(0, citiestotal-1), 2)
+    a = rands[0]
+    b = rands[1]
+    rands.clear()
+
+    if a > b:
+        a, b = b, a
 
     child = []
     child.insert(0, motherCromo[0])
@@ -23,13 +31,13 @@ def Crossover(motherCromo, fatherCromo, citiestotal):
 
     child.append(motherCromo[citiestotal])
 
+
+
     for i in range(1, citiestotal):
-        if (a < b and i > a and i < b):
+        if (i > a and i < b):
             child[i] = motherCromo[i]
-
-        elif (a > b and not (i < a and i > b)):
-            child[i] = motherCromo[i]
-
+        elif i == b:
+            break
 
     for i in range(1, citiestotal):
             for j in range(1, citiestotal):
@@ -41,10 +49,10 @@ def Crossover(motherCromo, fatherCromo, citiestotal):
     return child
 
 # go on chromo and swaps to genes until the end
-def randomMutation(cromo, citiesTotal):
+def randomMutation(cromo, citiesTotal, Pmutation):
 
     for i in range(1, citiesTotal-1):
-        if random.random() < mutationProb:
+        if random.random() < Pmutation:
             val = i
             while val == i:
                 val = random.randint(1, citiesTotal - 2)
@@ -124,6 +132,8 @@ def evolvePopulation(population, distances, citiestotal, first, nGenerations):
             child = Crossover(parent1, parent2, citiestotal)
             new_pop.append(child)
 
+    global mutationProb
+
     if(i > int(nGenerations*0.3) and i <= int(nGenerations*0.5)):
         mutationProb = 0.4
     elif(i > int(nGenerations*0.5) and i <= int(nGenerations*0.7)):
@@ -134,7 +144,7 @@ def evolvePopulation(population, distances, citiestotal, first, nGenerations):
         mutationProb = 0.1
 
     for i in range(1, len(new_pop)):
-        cromoMutation = randomMutation(new_pop[i], citiestotal)
+        cromoMutation = randomMutation(new_pop[i], citiestotal, mutationProb)
         new_pop[i] = cromoMutation
 
     return new_pop

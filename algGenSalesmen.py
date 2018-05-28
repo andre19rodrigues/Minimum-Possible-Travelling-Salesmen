@@ -25,19 +25,23 @@ def Crossover(chromo, sizeCromo, distanceDict, maxKM, mutationProb):
         while val == rand:
             val = random.randint(0, sizeCromo - 2)
 
-    # position selected to add to new chromo
-    cromoPos = random.randrange(1, (len(chromo[rand]) - 2))
-
-
     cromoRemove = [None] * len(chromo[rand])
     for i in range(0, len(chromo[rand])):
         cromoRemove[i] = chromo[rand][i]
-    value = cromoRemove.pop(cromoPos)
 
     cromoADD = [None] * len(chromo[val])
     for i in range(0, len(chromo[val])):
         cromoADD[i] = chromo[val][i]
 
+    #80% of the times it will insure that will remove from a smaller chromo and insert in a bigger one
+    if (random.randint(0,100) < 80):
+        if (len(cromoRemove) > len(cromoADD)):
+            cromoRemove, cromoADD = cromoADD[:], cromoRemove[:]
+
+    # position selected to add to new chromo
+    cromoPos = random.randrange(1, (len(cromoRemove) - 2))
+
+    value = cromoRemove.pop(cromoPos)
     cromoADD.insert(len(cromoADD) - 2, value)
 
     min = []
