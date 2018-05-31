@@ -129,8 +129,17 @@ def evolvePopulation(population, distances, citiestotal, first, nGenerations):
             parent1 = proporcionalSelection(population, prob_array, popsize)
             parent2 = proporcionalSelection(population, prob_array, popsize)
 
-            child = Crossover(parent1, parent2, citiestotal)
-            new_pop.append(child)
+            randCross = random.random()
+            if randCross < crossoverProb:
+                child = Crossover(parent1, parent2, citiestotal)
+                new_pop.append(child)
+            else:
+                if randCross > 0.5:
+                    newChild = parent1[:-1]
+                    new_pop.append(newChild)
+                else:
+                    newChild = parent2[:-1]
+                    new_pop.append(newChild)
 
     global mutationProb
 
